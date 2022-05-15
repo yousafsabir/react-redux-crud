@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { addp, remp, upp } from "../../store/actions/EmployeeActions";
+import shortid from "shortid";
 import "./EmployeeForm.css";
 
 const EmployeeForm = () => {
@@ -25,24 +27,29 @@ const EmployeeForm = () => {
     };
 
     // Actions
-    const addp = () => {
-        dispatch({ type: "ADDP", payload: person });
+    const addPerson = () => {
+        Object.assign(person, { id: shortid.generate() });
+        dispatch(addp(person));
         clearPerson();
     };
-    const remp = (index) => {
-        dispatch({ type: "REMP", payload: index });
+
+    const remPerson = (id) => {
+        dispatch(remp(id));
     };
 
-    const [updIdx, setUpdIdx] = useState(0);
     const [update, setUpdate] = useState(false);
 
-    const upp1 = (index) => {
+    const loadPerson = (id) => {
         setUpdate(true);
-        setPerson(employee[index]);
-        setUpdIdx(index);
+        employee.map((item) => {
+            if (item.id === id) {
+                setPerson(item);
+            }
+        });
     };
-    const upp2 = () => {
-        dispatch({ type: "UPP", payload: { index: updIdx, person: person } });
+
+    const upPerson = () => {
+        dispatch(upp(person));
         clearPerson();
         setUpdate(false);
     };
@@ -71,7 +78,7 @@ const EmployeeForm = () => {
                     value={person.email}
                     onChange={inputHandler}
                 />
-                <button className="btn" onClick={update ? upp2 : addp}>
+                <button className="btn" onClick={update ? upPerson : addPerson}>
                     {update ? "Update" : "Add Person"}
                 </button>
             </form>
@@ -95,10 +102,10 @@ const EmployeeForm = () => {
                                 <td>{data.lName}</td>
                                 <td>{data.email}</td>
                                 <td>
-                                    <button onClick={() => upp1(index)}>
+                                    <button onClick={() => loadPerson(data.id)}>
                                         update
                                     </button>
-                                    <button onClick={() => remp(index)}>
+                                    <button onClick={() => remPerson(data.id)}>
                                         delete
                                     </button>
                                 </td>

@@ -1,36 +1,19 @@
-const employeeR = (
-    state = [
-        {
-            fName: "yousaf",
-            lName: "sabir",
-            email: "y@gmail.com",
-        },
-        {
-            fName: "nabeel",
-            lName: "tahir",
-            email: "n@gmail.com",
-        },
-        {
-            fName: "ismail",
-            lName: "sabir",
-            email: "i@gmail.com",
-        },
-    ],
-    action
-) => {
+const employeeR = (state = [], action) => {
     switch (action.type) {
         case "ADDP":
-            state.push(action.payload);
-            return state;
+            return [...state, action.payload];
 
         case "REMP":
-            state.splice(action.payload, 1);
-            // let newArr = state.filter((item) => action.payload != email);
-            // return newArr;
-            return (state = [...state]);
+            return state.filter((item) => action.payload != item.id);
+
         case "UPP":
-            state[action.payload.index] = action.payload.person;
-            return state;
+            return state.map((item) => {
+                if (item.id === action.payload.id) {
+                    return (item = action.payload);
+                } else {
+                    return item;
+                }
+            });
 
         default:
             return state;
